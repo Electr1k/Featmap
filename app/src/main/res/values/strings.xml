@@ -4,5 +4,9 @@
     <string name="onboarding_first">Ищи ближайшие мероприятия</string>
     <string name="onboarding_second">Посещай интересные места</string>
     <string name="onboarding_third">Знакомься с новыми людьми</string>
+    <string name="input_phone_number">Перед тем, как начать введи номер телефона</string>
+    <string name="example_phone_number">+X (XXX) XXX-XX-XX</string>
+    <string name="input_code">Отправь код из СМС</string>
+    <string name="example_verefy_code">123456</string>
 
 </resources>

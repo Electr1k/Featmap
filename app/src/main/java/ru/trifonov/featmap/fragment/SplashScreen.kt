@@ -19,7 +19,7 @@ class SplashScreen : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Handler(Looper.getMainLooper()).postDelayed({
-            if (PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("skipOnboarding", true)){
+            if (!PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("skipOnboarding", false)){
                 findNavController().navigate(R.id.action_splash_to_onboarding)
             }
             else findNavController().navigate(R.id.action_splash_to_auth)
