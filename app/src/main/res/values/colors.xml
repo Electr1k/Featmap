@@ -5,5 +5,9 @@
     <color name="yellow">#FFFF00</color>
     <color name="red">#FF0000</color>
     <color name="green">#00FF00</color>
-
+    <color name="orange">#FFE500</color>
+    <color name="blue">#4E4EFF</color>
+    <color name="light_blue">#CDCDFF</color>
+    <color name="btn_blue">#BABAFF</color>
+    <color name="pink">#FF00B7</color>
 </resources>

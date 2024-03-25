@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Featmap</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="next">Далее</string>
+    <string name="onboarding_first">Ищи ближайшие мероприятия</string>
+    <string name="onboarding_second">Посещай интересные места</string>
+    <string name="onboarding_third">Знакомься с новыми людьми</string>
+
 </resources>
