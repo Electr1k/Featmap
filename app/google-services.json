@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "796393250457",
+    "project_id": "featmap-379fc",
+    "storage_bucket": "featmap-379fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796393250457:android:0b1be0e9f108149379e208",
+        "android_client_info": {
+          "package_name": "ru.trifonov.featmap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZyvP5IzNi7U4NqtimMOGg6F_QpfkTzjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

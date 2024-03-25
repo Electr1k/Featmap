@@ -1,6 +1,9 @@
 package ru.trifonov.featmap.adapter
 
+import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,18 +15,26 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.NavController
 import androidx.viewpager.widget.PagerAdapter
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
 import ru.trifonov.featmap.R
+import ru.trifonov.featmap.fragment.AuthScreen
+import java.util.concurrent.TimeUnit
 
 
 class AuthPagerAdapter(
-    private val context: Context,
+    private val activity: Activity,
+    private val baseFragment: AuthScreen,
     private val fragments: List<Int>,
     private val navController: NavController
 ) : PagerAdapter() {
 
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val inflater = LayoutInflater.from(context)
+        val inflater = LayoutInflater.from(activity)
         val view = inflater.inflate(fragments[position], container, false)
         when (position){
             0 -> {
@@ -41,11 +52,43 @@ class AuthPagerAdapter(
                         numberMessage.visibility = View.VISIBLE
                     }
                     else{
-                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(number.windowToken, 0)
                         numberMessage.visibility = View.GONE
-                        verifyGroup.visibility = View.VISIBLE
-                        code.requestFocus()
+                        val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+
+                            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                                Log.d(TAG, "onVerificationCompleted:$credential")
+                                baseFragment.loginByCredential(credential, codeMessage)
+                            }
+
+                            override fun onVerificationFailed(e: FirebaseException) {
+                                numberMessage.text = "Произошла ошибка"
+                                numberMessage.visibility = View.VISIBLE
+                            }
+
+                            override fun onCodeSent(
+                                verificationId: String,
+                                token: PhoneAuthProvider.ForceResendingToken,
+                            ) {
+                                Log.d(TAG, "onCodeSent:$verificationId")
+                                verifyGroup.visibility = View.VISIBLE
+                                code.requestFocus()
+
+                                baseFragment.storedVerificationId = verificationId
+                                baseFragment.resendToken = token
+                            }
+                        }
+
+                        val options = PhoneAuthOptions.newBuilder(baseFragment.auth)
+                            .setPhoneNumber("+${number.text}") // Phone number to verify
+                            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                            .setActivity(activity) // Activity (for callback binding)
+                            .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
+                            .build()
+
+                        PhoneAuthProvider.verifyPhoneNumber(options)
+
                     }
                 }
 
@@ -55,11 +98,11 @@ class AuthPagerAdapter(
                         codeMessage.visibility = View.VISIBLE
                     }
                     else{
-                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        val inputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         inputMethodManager.hideSoftInputFromWindow(code.windowToken, 0)
                         codeMessage.visibility = View.GONE
-                        println("Success")
-                        navController.navigate(R.id.action_auth_to_map)
+                        val credential = PhoneAuthProvider.getCredential(baseFragment.storedVerificationId, code.text.toString())
+                        baseFragment.loginByCredential(credential, codeMessage)
                     }
                 }
                 number.addTextChangedListener{

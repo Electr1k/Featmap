@@ -5,13 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".fragment.MapScreen">
 
-    <TextView
+    <com.yandex.mapkit.mapview.MapView
+        android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/green"
-        android:textColor="@color/black"
-        android:textSize="28sp"
-        android:gravity="center"
-        android:text="map" />
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
