@@ -12,7 +12,11 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.getValue
+import ru.trifonov.featmap.MainActivity
 import ru.trifonov.featmap.R
+import ru.trifonov.featmap.dto.User
 
 
 class SplashScreen : Fragment() {
@@ -21,9 +25,6 @@ class SplashScreen : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
-
         return inflater.inflate(R.layout.splash_screen_fragment, container, false)
     }
 
@@ -43,12 +44,35 @@ class SplashScreen : Fragment() {
         leftImage.startAnimation(slideAnimationLeft)
         rightImage.startAnimation(slideAnimationRight)
         bottomText.startAnimation(slideAnimationBottom)
-
+        val baseActivity = (requireActivity() as MainActivity)
         Handler(Looper.getMainLooper()).postDelayed({
-            if (!PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("skipOnboarding", false)){
-                findNavController().navigate(R.id.action_splash_to_onboarding)
+            val sp = PreferenceManager.getDefaultSharedPreferences(requireContext())
+            val uid = sp.getString("uid", "")
+            if (!uid.isNullOrEmpty()){
+                FirebaseDatabase.getInstance().getReference("User").child(uid).get()
+                    .addOnCompleteListener {
+                        if (it.result.exists()) {
+                            baseActivity.currentUser =
+                                it.result.getValue<User>()!!
+                            findNavController().navigate(R.id.action_splash_to_map)
+                        }
+                        else{
+                            if (!sp.getBoolean("skipOnboarding", false)) {
+                                findNavController().navigate(R.id.action_splash_to_onboarding)
+                            } else findNavController().navigate(R.id.action_splash_to_auth)
+                        }
+                    }
+                    .addOnFailureListener {
+                        if (!sp.getBoolean("skipOnboarding", false)) {
+                            findNavController().navigate(R.id.action_splash_to_onboarding)
+                        } else findNavController().navigate(R.id.action_splash_to_auth)
+                    }
             }
-            else findNavController().navigate(R.id.action_splash_to_auth)
+            else {
+                if (!sp.getBoolean("skipOnboarding", false)) {
+                    findNavController().navigate(R.id.action_splash_to_onboarding)
+                } else findNavController().navigate(R.id.action_splash_to_auth)
+            }
         }, 2000)
     }
 

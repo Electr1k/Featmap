@@ -8,5 +8,7 @@
     <string name="example_phone_number">+X (XXX) XXX-XX-XX</string>
     <string name="input_code">Отправь код из СМС</string>
     <string name="example_verefy_code">123456</string>
+    <string name="what_is_your_name">Как тебя зовут?</string>
+    <string name="example_name">Александр</string>
 
 </resources>
