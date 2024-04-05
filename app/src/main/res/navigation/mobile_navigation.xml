@@ -50,6 +50,14 @@
     <fragment android:id="@+id/map"
         android:name="ru.trifonov.featmap.fragment.MapScreen"
         tools:layout="@layout/map_screen_fragment">
+        <action
+            android:id="@+id/action_map_to_detailed_event"
+            app:destination="@+id/detailed_event"/>
+    </fragment>
+
+    <fragment android:id="@+id/detailed_event"
+        android:name="ru.trifonov.featmap.fragment.DetailedEventScreen"
+        tools:layout="@layout/detailed_event_fragment">
     </fragment>
 
 </navigation>
