@@ -11,5 +11,6 @@
     <color name="btn_blue">#BABAFF</color>
     <color name="pink">#FF00B7</color>
     <color name="grey">#5C5C5C</color>
+    <color name="light_grey">#838383</color>
 
 </resources>

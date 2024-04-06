@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.mapview.MapView
 import ru.trifonov.featmap.databinding.ActivityMainBinding
 import ru.trifonov.featmap.dto.User
@@ -25,7 +27,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         mNavController = findNavController(R.id.nav_host_fragment_activity_bottom_navigation)
         mapView = findViewById(R.id.mapview)
-
+        mapView.map.move(
+            CameraPosition(
+            Point(47.208735,38.936699),
+            /* zoom = */ 13.0f,
+            /* azimuth = */ 0.0f,
+            /* tilt = */ 30.0f
+        )
+        )
     }
 
     override fun onStart() {

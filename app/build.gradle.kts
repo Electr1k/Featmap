@@ -66,4 +66,7 @@ dependencies {
 
         implementation("com.squareup.picasso:picasso:2.8")
 
+        // Moshi
+        implementation("com.squareup.moshi:moshi:1.8.0")
+        implementation("com.squareup.moshi:moshi-adapters:1.8.0")
 }

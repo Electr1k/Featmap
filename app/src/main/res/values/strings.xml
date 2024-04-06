@@ -10,5 +10,7 @@
     <string name="example_verefy_code">123456</string>
     <string name="what_is_your_name">Как тебя зовут?</string>
     <string name="example_name">Александр</string>
+    <string name="go">Я пойду</string>
+    <string name="not_go">Отказаться</string>
 
 </resources>

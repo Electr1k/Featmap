@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.google.firebase.database.DataSnapshot
@@ -14,7 +15,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.Map
 import com.yandex.runtime.ui_view.ViewProvider
 import ru.trifonov.featmap.MainActivity
@@ -40,13 +40,6 @@ class MapScreen : Fragment() {
 
 
         getEvents()
-
-        map.move(CameraPosition(
-            Point(47.208735,38.936699),
-            /* zoom = */ 13.0f,
-            /* azimuth = */ 150.0f,
-            /* tilt = */ 30.0f
-        ))
     }
 
     private fun getEvents(){
@@ -58,22 +51,11 @@ class MapScreen : Fragment() {
                     eventsList?.forEach {
                         val point = map.mapObjects.addPlacemark(Point(it.latitude!!, it.longitude!!))
                         val view = layoutInflater.inflate(R.layout.point_event_icon, null)
+                        val card = view.findViewById<CardView>(R.id.card)
                         val imageView = view.findViewById<ImageView>(R.id.icon)
+                        imageView.load(it.images!![0])
 
-                        imageView.load("https://avatars.mds.yandex.net/get-kinopoisk-image/4774061/afe1f711-8031-4961-a4e6-86abdca9df3c/220x330") {
-                            listener(
-                                onStart = {
-                                    println("Start")
-                                },
-                                onSuccess = { request, metadata ->
-                                    point.setView(ViewProvider(view))
-                                },
-                                onError = { request, throwable ->
-                                    println("Error: ${throwable}")
-                                }
-                            )
-                        }
-
+                        point.setView(ViewProvider(card))
 
                         point.addTapListener{ _, _ ->
                             val bundle = Bundle()
