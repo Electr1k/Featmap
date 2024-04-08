@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -18,9 +19,6 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import ru.trifonov.featmap.MainActivity
 import ru.trifonov.featmap.R
 import ru.trifonov.featmap.adapter.ImagePagerAdapter
@@ -28,13 +26,15 @@ import ru.trifonov.featmap.adapter.UsersAdapter
 import ru.trifonov.featmap.dto.Event
 import ru.trifonov.featmap.dto.User
 import java.text.SimpleDateFormat
+import java.util.ArrayList
 import java.util.Date
 import kotlin.math.max
 
 
 class DetailedEventScreen : Fragment() {
     private lateinit var baseActivity: MainActivity
-    private val database: DatabaseReference = FirebaseDatabase.getInstance().getReference("events")
+    private val eventsDatabase: DatabaseReference = FirebaseDatabase.getInstance().getReference("events")
+    private val usersDatabase: DatabaseReference = FirebaseDatabase.getInstance().getReference("User")
     private lateinit var currentEvent: Event
     private lateinit var bottomSheet: LinearLayout
     private lateinit var mBottomSheetBehavior: BottomSheetBehavior<View>
@@ -49,6 +49,7 @@ class DetailedEventScreen : Fragment() {
     private var peekHeight = 400
     private lateinit var goToEvent: Button
     private lateinit var usersAdapter: UsersAdapter
+    private lateinit var list_events_btn: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,6 +71,10 @@ class DetailedEventScreen : Fragment() {
         linearIndicator = view.findViewById(R.id.linearIndicator)
         goToEvent = view.findViewById(R.id.go_event_btn)
         usersRecyclerView = view.findViewById(R.id.users)
+        list_events_btn = view.findViewById(R.id.list_events_btn)
+        list_events_btn.setOnClickListener{
+            findNavController().navigate(R.id.action_detailed_event_to_events)
+        }
 //        collapseContent = view.findViewById(R.id.collapse_content)
 
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -123,7 +128,7 @@ class DetailedEventScreen : Fragment() {
 
 
     private fun getEvent(id: Int, initPager: Boolean = false){
-        database.child(id.toString()).get()
+        eventsDatabase.child(id.toString()).get()
             .addOnCompleteListener {
                 if (it.result.exists()){
                     currentEvent = it.result.getValue<Event>()!!
@@ -148,11 +153,16 @@ class DetailedEventScreen : Fragment() {
 
             if (baseActivity.currentUser.uid in currentEvent.users) {
                 currentEvent.users.remove(baseActivity.currentUser.uid)
-                database.child(currentEvent.id.toString()).child("users").setValue(currentEvent.users)
+                eventsDatabase.child(currentEvent.id.toString()).child("users").setValue(currentEvent.users)
+                baseActivity.currentUser.eventsList?.remove(currentEvent.id)
+                usersDatabase.child(baseActivity.currentUser.uid.toString()).setValue(baseActivity.currentUser)
                 getEvent(currentEvent.id!!)
             }
             else{
-                database.child(currentEvent.id.toString()).child("users").child(currentEvent.users.size.toString()).setValue(baseActivity.currentUser.uid)
+                eventsDatabase.child(currentEvent.id.toString()).child("users").child(currentEvent.users.size.toString()).setValue(baseActivity.currentUser.uid)
+                if (baseActivity.currentUser.eventsList == null) baseActivity.currentUser.eventsList = ArrayList()
+                baseActivity.currentUser.eventsList!!.add(currentEvent.id!!)
+                usersDatabase.child(baseActivity.currentUser.uid.toString()).setValue(baseActivity.currentUser)
                 getEvent(currentEvent.id!!)
             }
         }

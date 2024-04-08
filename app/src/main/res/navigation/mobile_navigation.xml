@@ -53,11 +53,29 @@
         <action
             android:id="@+id/action_map_to_detailed_event"
             app:destination="@+id/detailed_event"/>
+        <action
+            android:id="@+id/action_map_to_events"
+            app:destination="@+id/events"/>
     </fragment>
 
     <fragment android:id="@+id/detailed_event"
         android:name="ru.trifonov.featmap.fragment.DetailedEventScreen"
         tools:layout="@layout/detailed_event_fragment">
+        <action
+            android:id="@+id/action_detailed_event_to_events"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/mobile_navigation"
+            app:destination="@+id/events"/>
+    </fragment>
+
+    <fragment android:id="@+id/events"
+        android:name="ru.trifonov.featmap.fragment.EventsScreen"
+        tools:layout="@layout/events_screen_fragment">
+        <action
+            android:id="@+id/action_events_to_detailed_event"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/mobile_navigation"
+            app:destination="@+id/detailed_event"/>
     </fragment>
 
 </navigation>

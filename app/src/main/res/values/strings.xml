@@ -12,5 +12,6 @@
     <string name="example_name">Александр</string>
     <string name="go">Я пойду</string>
     <string name="not_go">Отказаться</string>
+    <string name="events">Events</string>
 
 </resources>

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.navigation.fragment.findNavController
@@ -25,6 +26,8 @@ import ru.trifonov.featmap.dto.Event
 class MapScreen : Fragment() {
     private lateinit var baseActivity: MainActivity
     private lateinit var map: Map
+    private lateinit var eventsBtn: Button
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,10 +38,11 @@ class MapScreen : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         baseActivity = requireActivity() as MainActivity
-
         map = baseActivity.mapView.map
-
-
+        eventsBtn = view.findViewById(R.id.eventsBtn)
+        eventsBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_map_to_events)
+        }
         getEvents()
     }
 

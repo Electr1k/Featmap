@@ -33,7 +33,6 @@ class UsersAdapter  (
 
     internal fun updateList(newList: List<User>){
         usersList = newList
-        println("Restore ${usersList.size}")
         notifyDataSetChanged()
     }
 

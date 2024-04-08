@@ -10,5 +10,6 @@ data class User(
     var phoneNumber: String? = null,
 //    var location: Point? = null,
     var uid: String? = null,
+    var eventsList: ArrayList<Int>? = null
 //    var linkImage: String? = null,
 )
